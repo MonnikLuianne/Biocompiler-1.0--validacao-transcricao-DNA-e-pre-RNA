@@ -37,12 +37,25 @@ def encontrar_stop(dna,posicao_start):
 
         i+=3
     return -1
-         
-        
+
+def deteccao_frameshift(dna,posicao_start):
+
+    codons_parada = {"TAA", "TGA", "TAG"}
+
+    ultimo_codon = dna[-3:] #Pega as 3 últimas bases da sequência
+
+    if ultimo_codon not in codons_parada: #Se as últimas 3 bases não formam um STOP, não vou usar esse critério para dizer que tem frameshift
+        return False
+
+    posicao_stop_final = len(dna) - 3
+
+    if (posicao_stop_final - posicao_start) % 3 != 0:
+        return True
+
+    return False
+
+    
             
-
-
-
 if __name__ == "__main__":
 
     arquivo = "BioCompiler_1_0_60_casos_alunos_SEM RESPOSTAS.csv"
@@ -54,23 +67,27 @@ if __name__ == "__main__":
         resultado = validar_bases(dna)
 
         if resultado == False:
-            print("BUG - base inválida")
+            print(f"Entrada {i}: BUG - base inválida")
             continue
 
         posicao_start = encontrar_start(dna)
         
         if posicao_start == -1:
-            print(f"BUG - START Ausente")
+            print(f"Entrada {i}: BUG - START Ausente")
             continue
 
         print(f"Entrada {i}: START encontrado na posição {posicao_start}")
 
+        existe_frameshift = deteccao_frameshift(dna,posicao_start)
+            
+        if existe_frameshift:
+            print(f"Entrada {i}: BUG - frameshift")
+            continue
+        
         posicao_stop = encontrar_stop(dna,posicao_start)
 
         if posicao_stop == -1:
-            print(f"BUG - STOP Ausente")
+            print(f"Entrada {i}: BUG - STOP Ausente")
             continue
 
         print(f"Entrada {i}: STOP encontrado na posição {posicao_stop}")
-
-
