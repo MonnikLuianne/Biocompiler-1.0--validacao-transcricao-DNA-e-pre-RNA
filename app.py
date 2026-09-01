@@ -3,6 +3,16 @@ import pandas as pd
 import base64
 import os
 
+# Importa as funções do BioCompiler da Pessoa A
+from biocompiler import (
+    validar_bases,
+    encontrar_start,
+    encontrar_stop,
+    deteccao_frameshift,
+    deteccao_nonsense,
+    transcrever_dna
+)
+
 
 # ============================================================
 # CONFIGURAÇÃO DA PÁGINA
@@ -217,16 +227,20 @@ if imagem_base64:
             border-color:
                 rgba(255, 255, 255, 0.30);
         }}
-        
+
+
         /* ====================================================
            BARRA DE PROGRESSO
            ==================================================== */
 
         div[data-testid="stProgress"] > div > div {{
+
             background-color: #FFFFFF !important;
         }}
 
+
         div[data-testid="stProgress"] > div {{
+
             background-color: rgba(255, 255, 255, 0.25) !important;
         }}
 
@@ -241,53 +255,117 @@ if imagem_base64:
 # ============================================================
 
 def processar_entrada(dna):
-    """
-    Processamento provisório.
 
-    Atualmente verifica apenas se as bases da sequência
-    são válidas.
+    # --------------------------------------------------------
+    # 1. Validação das bases
+    # --------------------------------------------------------
 
-    A lógica completa do BioCompiler será conectada
-    posteriormente ao biocompiler.py.
-    """
+    resultado = validar_bases(dna)
 
-    bases_validas = {"A", "T", "C", "G"}
+    if resultado == False:
 
-    for base in dna:
-
-        if base not in bases_validas:
-
-            return "BUG - base inválida"
-
-    return "CORRETO"
+        return {
+            "Resposta": "BUG - base inválida",
+            "START": "-",
+            "STOP": "-",
+            "Pré-RNA": "-"
+        }
 
 
-# ============================================================
-# FUNÇÃO PARA PROCESSAR TODAS AS ENTRADAS
-# ============================================================
+    # --------------------------------------------------------
+    # 2. Procurar START
+    # --------------------------------------------------------
 
-def processar_entradas(entradas):
+    posicao_start = encontrar_start(dna)
 
-    resultados = []
+    if posicao_start == -1:
 
-    for numero, dna in enumerate(
-        entradas,
-        start=1
-    ):
+        return {
+            "Resposta": "BUG - START ausente",
+            "START": "-",
+            "STOP": "-",
+            "Pré-RNA": "-"
+        }
 
-        resposta = processar_entrada(dna)
 
-        resultados.append({
+    # --------------------------------------------------------
+    # 3. Detectar frameshift
+    # --------------------------------------------------------
 
-            "Entrada": numero,
+    existe_frameshift = deteccao_frameshift(
+        dna,
+        posicao_start
+    )
 
-            "DNA": dna,
+    if existe_frameshift:
 
-            "Resposta": resposta
+        return {
+            "Resposta": "BUG - frameshift",
+            "START": posicao_start,
+            "STOP": "-",
+            "Pré-RNA": "-"
+        }
 
-        })
 
-    return resultados
+    # --------------------------------------------------------
+    # 4. Procurar STOP
+    # --------------------------------------------------------
+
+    posicao_stop = encontrar_stop(
+        dna,
+        posicao_start
+    )
+
+    if posicao_stop == -1:
+
+        return {
+            "Resposta": "BUG - STOP ausente",
+            "START": posicao_start,
+            "STOP": "-",
+            "Pré-RNA": "-"
+        }
+
+
+    # --------------------------------------------------------
+    # 5. Detectar nonsense
+    # --------------------------------------------------------
+
+    existe_nonsense = deteccao_nonsense(
+        dna,
+        posicao_start
+    )
+
+    if existe_nonsense:
+
+        return {
+            "Resposta": "BUG - nonsense / STOP prematuro",
+            "START": posicao_start,
+            "STOP": posicao_stop,
+            "Pré-RNA": "-"
+        }
+
+
+    # --------------------------------------------------------
+    # 6. Transcrição para pré-RNA
+    # --------------------------------------------------------
+
+    pre_rna = transcrever_dna(
+        dna,
+        posicao_start,
+        posicao_stop
+    )
+
+
+    # --------------------------------------------------------
+    # 7. Sequência correta
+    # --------------------------------------------------------
+
+    return {
+        "Resposta": "CORRETO",
+        "START": posicao_start,
+        "STOP": posicao_stop,
+        "Pré-RNA": pre_rna
+    }
 
 
 # ============================================================
@@ -311,6 +389,7 @@ def gerar_diagnostico(resultados):
         "BUG - nonsense / STOP prematuro": 0
     }
 
+
     for resultado in resultados:
 
         resposta = resultado["Resposta"]
@@ -318,6 +397,7 @@ def gerar_diagnostico(resultados):
         if resposta in diagnosticos:
 
             diagnosticos[resposta] += 1
+
 
     return diagnosticos
 
@@ -330,15 +410,44 @@ def gerar_arquivo_exportacao(resultados):
 
     linhas = []
 
+
     for resultado in resultados:
 
         numero = resultado["Entrada"]
 
+        dna = resultado["DNA"]
+
         resposta = resultado["Resposta"]
+
+        start = resultado["START"]
+
+        stop = resultado["STOP"]
+
+        pre_rna = resultado["Pré-RNA"]
+
 
         linhas.append(
             f"Entrada {numero}: {resposta}"
         )
+
+        linhas.append(
+            f"DNA: {dna}"
+        )
+
+        linhas.append(
+            f"START: {start}"
+        )
+
+        linhas.append(
+            f"STOP: {stop}"
+        )
+
+        linhas.append(
+            f"Pré-RNA: {pre_rna}"
+        )
+
+        linhas.append("")
+
 
     return "\n".join(linhas)
 
@@ -364,11 +473,13 @@ st.divider()
 
 arquivo = "BioCompiler_1_0_60_casos_alunos_SEM RESPOSTAS.csv"
 
+
 try:
 
     tabela = pd.read_csv(arquivo)
 
     entradas = tabela["entrada"].tolist()
+
 
 except Exception as erro:
 
@@ -432,11 +543,13 @@ if st.button(
             f"Processando {len(entradas)} entradas..."
         )
 
+
         # ----------------------------------------------------
         # Barra de progresso
         # ----------------------------------------------------
 
         barra = st.progress(0)
+
 
         resultados = []
 
@@ -450,7 +563,8 @@ if st.button(
             start=1
         ):
 
-            resposta = processar_entrada(dna)
+            resultado = processar_entrada(dna)
+
 
             resultados.append({
 
@@ -458,9 +572,16 @@ if st.button(
 
                 "DNA": dna,
 
-                "Resposta": resposta
+                "Resposta": resultado["Resposta"],
+
+                "START": resultado["START"],
+
+                "STOP": resultado["STOP"],
+
+                "Pré-RNA": resultado["Pré-RNA"]
 
             })
+
 
             barra.progress(
                 numero / len(entradas)
@@ -480,9 +601,11 @@ if st.button(
 
         st.header("📋 Resultados da execução")
 
+
         df_resultados = pd.DataFrame(
             resultados
         )
+
 
         st.dataframe(
             df_resultados,
@@ -498,6 +621,7 @@ if st.button(
         st.divider()
 
         st.header("📊 Relatório diagnóstico")
+
 
         diagnostico = gerar_diagnostico(
             resultados
@@ -564,6 +688,7 @@ if st.button(
 
             ],
 
+
             "Resposta": [
 
                 "CORRETO",
@@ -579,6 +704,7 @@ if st.button(
                 "BUG - nonsense / STOP prematuro"
 
             ],
+
 
             "Quantidade": [
 
@@ -597,6 +723,7 @@ if st.button(
                 ]
 
             ]
+
         }
 
 
@@ -620,6 +747,7 @@ if st.button(
 
         st.header("📥 Exportação")
 
+
         arquivo_resultados = (
             gerar_arquivo_exportacao(
                 resultados
@@ -628,6 +756,7 @@ if st.button(
 
 
         st.download_button(
+
             label="📥 Exportar resultados",
 
             data=arquivo_resultados,
@@ -637,4 +766,5 @@ if st.button(
             mime="text/plain",
 
             use_container_width=True
+
         )
