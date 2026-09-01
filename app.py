@@ -1,5 +1,7 @@
 import streamlit as st
 import pandas as pd
+import base64
+import os
 
 
 # ============================================================
@@ -14,6 +16,227 @@ st.set_page_config(
 
 
 # ============================================================
+# CARREGAMENTO DA IMAGEM DE FUNDO
+# ============================================================
+
+imagem_fundo = "fundo_biocompiler.png"
+
+imagem_base64 = ""
+
+if os.path.exists(imagem_fundo):
+
+    with open(imagem_fundo, "rb") as arquivo_imagem:
+
+        imagem_base64 = base64.b64encode(
+            arquivo_imagem.read()
+        ).decode()
+
+else:
+
+    st.warning(
+        "Imagem de fundo não encontrada. "
+        "Verifique se o arquivo 'fundo_biocompiler.png' "
+        "está na mesma pasta do app.py."
+    )
+
+
+# ============================================================
+# ESTILO VISUAL
+# ============================================================
+
+if imagem_base64:
+
+    st.markdown(
+        f"""
+        <style>
+
+        /* ====================================================
+           PLANO DE FUNDO
+           ==================================================== */
+
+        .stApp {{
+
+            background-image:
+                linear-gradient(
+                    rgba(0, 20, 50, 0.10),
+                    rgba(0, 20, 50, 0.10)
+                ),
+                url("data:image/png;base64,{imagem_base64}");
+
+            background-size: cover;
+
+            background-position: center;
+
+            background-attachment: fixed;
+        }}
+
+
+        /* ====================================================
+           ÁREA PRINCIPAL
+           ==================================================== */
+
+        .block-container {{
+
+            background: transparent !important;
+
+            padding-top: 2rem;
+
+            padding-bottom: 3rem;
+        }}
+
+
+        /* ====================================================
+           TÍTULOS
+           ==================================================== */
+
+        h1,
+        h2,
+        h3 {{
+
+            color: white !important;
+
+            font-weight: 800 !important;
+
+            text-shadow:
+                0 2px 5px rgba(0, 0, 0, 0.75);
+        }}
+
+
+        h1 {{
+
+            text-align: center;
+
+            font-size: 2.8rem !important;
+        }}
+
+
+        /* ====================================================
+           TEXTOS
+           ==================================================== */
+
+        p,
+        label {{
+
+            color: white !important;
+
+            text-shadow:
+                0 1px 3px rgba(0, 0, 0, 0.75);
+        }}
+
+
+        /* ====================================================
+           CARTÕES DE MÉTRICAS
+           ==================================================== */
+
+        div[data-testid="stMetric"] {{
+
+            background:
+                rgba(0, 0, 0, 0.30) !important;
+
+            border:
+                1px solid rgba(255, 255, 255, 0.30);
+
+            border-radius: 14px;
+
+            padding: 18px;
+
+            box-shadow:
+                0 4px 12px rgba(0, 0, 0, 0.25);
+        }}
+
+
+        /* Nome da métrica */
+
+        div[data-testid="stMetricLabel"] {{
+
+            color: white !important;
+        }}
+
+
+        div[data-testid="stMetricLabel"] p {{
+
+            color: white !important;
+        }}
+
+
+        /* Número da métrica */
+
+        div[data-testid="stMetricValue"] {{
+
+            color: white !important;
+        }}
+
+
+        /* ====================================================
+           BOTÕES
+           ==================================================== */
+
+        div.stButton > button {{
+
+            border-radius: 10px;
+
+            font-size: 1.05rem;
+
+            font-weight: 700;
+
+            padding: 0.7rem 1rem;
+        }}
+
+
+        /* ====================================================
+           TABELAS
+           ==================================================== */
+
+        div[data-testid="stDataFrame"] {{
+
+            background:
+                rgba(255, 255, 255, 0.92);
+
+            border-radius: 10px;
+
+            padding: 5px;
+        }}
+
+
+        /* ====================================================
+           ALERTAS
+           ==================================================== */
+
+        div[data-testid="stAlert"] {{
+
+            border-radius: 10px;
+        }}
+
+
+        /* ====================================================
+           DIVISORES
+           ==================================================== */
+
+        hr {{
+
+            border-color:
+                rgba(255, 255, 255, 0.30);
+        }}
+        
+        /* ====================================================
+           BARRA DE PROGRESSO
+           ==================================================== */
+
+        div[data-testid="stProgress"] > div > div {{
+            background-color: #FFFFFF !important;
+        }}
+
+        div[data-testid="stProgress"] > div {{
+            background-color: rgba(255, 255, 255, 0.25) !important;
+        }}
+
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+# ============================================================
 # FUNÇÃO PARA PROCESSAR UMA ENTRADA
 # ============================================================
 
@@ -21,15 +244,19 @@ def processar_entrada(dna):
     """
     Processamento provisório.
 
-    Atualmente verifica apenas se as bases são válidas.
-    A lógica completa será conectada ao biocompiler.py
-    quando a Pessoa A finalizar o processamento.
+    Atualmente verifica apenas se as bases da sequência
+    são válidas.
+
+    A lógica completa do BioCompiler será conectada
+    posteriormente ao biocompiler.py.
     """
 
     bases_validas = {"A", "T", "C", "G"}
 
     for base in dna:
+
         if base not in bases_validas:
+
             return "BUG - base inválida"
 
     return "CORRETO"
@@ -40,16 +267,24 @@ def processar_entrada(dna):
 # ============================================================
 
 def processar_entradas(entradas):
+
     resultados = []
 
-    for numero, dna in enumerate(entradas, start=1):
+    for numero, dna in enumerate(
+        entradas,
+        start=1
+    ):
 
         resposta = processar_entrada(dna)
 
         resultados.append({
+
             "Entrada": numero,
+
             "DNA": dna,
+
             "Resposta": resposta
+
         })
 
     return resultados
@@ -62,11 +297,17 @@ def processar_entradas(entradas):
 def gerar_diagnostico(resultados):
 
     diagnosticos = {
+
         "CORRETO": 0,
+
         "BUG - base inválida": 0,
+
         "BUG - START ausente": 0,
+
         "BUG - STOP ausente": 0,
+
         "BUG - frameshift": 0,
+
         "BUG - nonsense / STOP prematuro": 0
     }
 
@@ -75,13 +316,14 @@ def gerar_diagnostico(resultados):
         resposta = resultado["Resposta"]
 
         if resposta in diagnosticos:
+
             diagnosticos[resposta] += 1
 
     return diagnosticos
 
 
 # ============================================================
-# FUNÇÃO PARA GERAR O ARQUIVO DE EXPORTAÇÃO
+# FUNÇÃO PARA GERAR ARQUIVO DE EXPORTAÇÃO
 # ============================================================
 
 def gerar_arquivo_exportacao(resultados):
@@ -91,6 +333,7 @@ def gerar_arquivo_exportacao(resultados):
     for resultado in resultados:
 
         numero = resultado["Entrada"]
+
         resposta = resultado["Resposta"]
 
         linhas.append(
@@ -105,6 +348,7 @@ def gerar_arquivo_exportacao(resultados):
 # ============================================================
 
 st.title("🧬 BioCompiler 1.0")
+
 st.subheader("DNA Transcriber")
 
 st.write(
@@ -136,12 +380,13 @@ except Exception as erro:
 
 
 # ============================================================
-# INFORMAÇÕES
+# INFORMAÇÕES SOBRE AS ENTRADAS
 # ============================================================
 
 st.header("📂 Entradas")
 
 col1, col2 = st.columns(2)
+
 
 with col1:
 
@@ -149,6 +394,7 @@ with col1:
         "Entradas carregadas",
         len(entradas)
     )
+
 
 with col2:
 
@@ -162,10 +408,11 @@ st.divider()
 
 
 # ============================================================
-# BOTÃO INICIAR
+# EXECUÇÃO
 # ============================================================
 
 st.header("▶ Execução")
+
 
 if st.button(
     "▶ Iniciar execução",
@@ -185,12 +432,19 @@ if st.button(
             f"Processando {len(entradas)} entradas..."
         )
 
+        # ----------------------------------------------------
         # Barra de progresso
+        # ----------------------------------------------------
+
         barra = st.progress(0)
 
         resultados = []
 
-        # Processamento
+
+        # ----------------------------------------------------
+        # Processamento das entradas
+        # ----------------------------------------------------
+
         for numero, dna in enumerate(
             entradas,
             start=1
@@ -199,9 +453,13 @@ if st.button(
             resposta = processar_entrada(dna)
 
             resultados.append({
+
                 "Entrada": numero,
+
                 "DNA": dna,
+
                 "Resposta": resposta
+
             })
 
             barra.progress(
@@ -246,16 +504,18 @@ if st.button(
         )
 
 
-        # Métricas principais
-        col1, col2, col3 = st.columns(3)
+        # ----------------------------------------------------
+        # Métricas
+        # ----------------------------------------------------
 
         total = len(resultados)
 
-        corretos = diagnostico[
-            "CORRETO"
-        ]
+        corretos = diagnostico["CORRETO"]
 
         bugs = total - corretos
+
+
+        col1, col2, col3 = st.columns(3)
 
 
         with col1:
@@ -282,52 +542,60 @@ if st.button(
             )
 
 
+        # ----------------------------------------------------
         # Tabela do diagnóstico
+        # ----------------------------------------------------
 
         dados_diagnostico = {
 
             "Caso": [
+
                 "1 — Entrada correta",
+
                 "2 — Base inválida",
+
                 "3 — START ausente",
+
                 "4 — STOP ausente",
+
                 "5 — Frameshift",
+
                 "6 — Nonsense"
+
             ],
 
             "Resposta": [
+
                 "CORRETO",
+
                 "BUG - base inválida",
+
                 "BUG - START ausente",
+
                 "BUG - STOP ausente",
+
                 "BUG - frameshift",
+
                 "BUG - nonsense / STOP prematuro"
+
             ],
 
             "Quantidade": [
-                diagnostico[
-                    "CORRETO"
-                ],
 
-                diagnostico[
-                    "BUG - base inválida"
-                ],
+                diagnostico["CORRETO"],
 
-                diagnostico[
-                    "BUG - START ausente"
-                ],
+                diagnostico["BUG - base inválida"],
 
-                diagnostico[
-                    "BUG - STOP ausente"
-                ],
+                diagnostico["BUG - START ausente"],
 
-                diagnostico[
-                    "BUG - frameshift"
-                ],
+                diagnostico["BUG - STOP ausente"],
+
+                diagnostico["BUG - frameshift"],
 
                 diagnostico[
                     "BUG - nonsense / STOP prematuro"
                 ]
+
             ]
         }
 
@@ -361,8 +629,12 @@ if st.button(
 
         st.download_button(
             label="📥 Exportar resultados",
+
             data=arquivo_resultados,
+
             file_name="resultados_biocompiler.txt",
+
             mime="text/plain",
+
             use_container_width=True
         )

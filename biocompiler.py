@@ -25,7 +25,7 @@ def encontrar_start(dna):
         if dna[i] == 'A' and dna[i+1] == 'T' and dna[i+2] == 'G':
             return i
 
-        i+=1
+        i+=3
     return -1
 
 def encontrar_stop(dna,posicao_start):
@@ -54,7 +54,41 @@ def deteccao_frameshift(dna,posicao_start):
 
     return False
 
-    
+def deteccao_nonsense(dna,posicao_start):
+
+    i = posicao_start + 3
+
+    ultimo_codon = dna[-3:]
+
+    posicao_stop_final = len(dna) - 3
+
+    codons_parada = {"TAA", "TGA", "TAG"}
+
+    if ultimo_codon in codons_parada:
+        while i < posicao_stop_final:
+            if (dna[i] == 'T' and dna[i+1] == 'A' and dna[i+2] == 'A') or (dna[i] == 'T' and dna[i+1] == 'A' and dna[i+2] == 'G') or (dna[i] == 'T' and dna[i+1] == 'G' and dna[i+2] == 'A'):
+                return True
+            i+=3
+        return False
+
+    return False
+
+def transcrever_dna(dna, posicao_start, posicao_stop):
+
+    i = posicao_start
+    pre_rna = ""
+
+    while i <= posicao_stop + 2:
+
+        if dna[i] == 'T':
+            pre_rna += 'U'
+        else:
+            pre_rna += dna[i]
+
+        i += 1
+
+    return pre_rna
+
             
 if __name__ == "__main__":
 
@@ -90,4 +124,10 @@ if __name__ == "__main__":
             print(f"Entrada {i}: BUG - STOP Ausente")
             continue
 
-        print(f"Entrada {i}: STOP encontrado na posição {posicao_stop}")
+        existe_nonsense = deteccao_nonsense(dna,posicao_start)
+
+        if existe_nonsense:
+            print(f"Entrada {i}: BUG - nonsense / STOP prematuro")
+            continue
+
+        print(f"Entrada {i}: CORRETO")
