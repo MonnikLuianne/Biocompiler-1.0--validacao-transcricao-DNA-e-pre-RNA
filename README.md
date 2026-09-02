@@ -65,6 +65,10 @@ organização visual da aplicação.
 Imagem utilizada como plano de fundo da interface.
 Deve permanecer na mesma pasta do app.py.
 
+# BioCompiler_1_0_60_casos_alunos_SEM RESPOSTAS.csv
+Conntém as 60 entradas utilizadas pelo sistema.
+Deve permanecer na mesma pasta do projeto.
+
 ### 🧬 Funcionamento do BioCompiler
 
 O processamento de cada sequência segue uma ordem definida.
@@ -152,5 +156,4 @@ Posição do START;
 Posição do STOP;
 Sequência de Pré-RNA, quando aplicável.
 O arquivo pode ser salvo pelo usuário e utilizado para consulta ou entrega dos resultados do processamento.
-# ⚠️ Observação
-Para executar o projeto corretamente, o arquivo BioCompiler_1_0_60_casos_alunos_SEM RESPOSTAS.csv deve estar presente na pasta do projeto, pois ele contém as 60 entradas utilizadas pelo sistema.
+
