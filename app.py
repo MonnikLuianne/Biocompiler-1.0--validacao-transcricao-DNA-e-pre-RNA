@@ -3,7 +3,10 @@ import pandas as pd
 import base64
 import os
 
+<<<<<<< HEAD
 # Importa as funções do BioCompiler
+=======
+>>>>>>> 6ada605f4dfb4caf587046688405b90480118fc2
 from biocompiler import (
     ler_arquivo,
     validar_bases,
@@ -86,6 +89,7 @@ if imagem_base64:
             background: transparent !important;
             padding-top: 2rem;
             padding-bottom: 3rem;
+
         }}
 
 
@@ -100,12 +104,14 @@ if imagem_base64:
             font-weight: 800 !important;
             text-shadow:
                 0 2px 5px rgba(0, 0, 0, 0.75);
+
         }}
 
 
         h1 {{
             text-align: center;
             font-size: 2.8rem !important;
+
         }}
 
 
@@ -118,6 +124,7 @@ if imagem_base64:
             color: white !important;
             text-shadow:
                 0 1px 3px rgba(0, 0, 0, 0.75);
+
         }}
 
 
@@ -137,21 +144,25 @@ if imagem_base64:
 
             box-shadow:
                 0 4px 12px rgba(0, 0, 0, 0.25);
+
         }}
 
 
         div[data-testid="stMetricLabel"] {{
             color: white !important;
+
         }}
 
 
         div[data-testid="stMetricLabel"] p {{
             color: white !important;
+
         }}
 
 
         div[data-testid="stMetricValue"] {{
             color: white !important;
+
         }}
 
 
@@ -164,6 +175,7 @@ if imagem_base64:
             font-size: 1.05rem;
             font-weight: 700;
             padding: 0.7rem 1rem;
+
         }}
 
 
@@ -177,6 +189,7 @@ if imagem_base64:
 
             border-radius: 10px;
             padding: 5px;
+
         }}
 
 
@@ -186,6 +199,7 @@ if imagem_base64:
 
         div[data-testid="stAlert"] {{
             border-radius: 10px;
+
         }}
 
 
@@ -196,6 +210,7 @@ if imagem_base64:
         hr {{
             border-color:
                 rgba(255, 255, 255, 0.30);
+
         }}
 
 
@@ -205,11 +220,19 @@ if imagem_base64:
 
         div[data-testid="stProgress"] > div > div {{
             background-color: #FFFFFF !important;
+
         }}
 
 
         div[data-testid="stProgress"] > div {{
+<<<<<<< HEAD
             background-color: rgba(255, 255, 255, 0.25) !important;
+=======
+
+            background-color:
+                rgba(255, 255, 255, 0.25) !important;
+
+>>>>>>> 6ada605f4dfb4caf587046688405b90480118fc2
         }}
 
         </style>
@@ -225,7 +248,7 @@ if imagem_base64:
 def processar_entrada(dna):
 
     # --------------------------------------------------------
-    # 1. Validação das bases
+    # 1. Verificar bases
     # --------------------------------------------------------
 
     if not validar_bases(dna):
@@ -235,9 +258,13 @@ def processar_entrada(dna):
             "Resposta": "BUG - base inválida",
             "START": "-",
             "STOP": "-",
+<<<<<<< HEAD
             "Quadro": "-",
             "Transcrição": "-",
             "Pré-RNA": "NÃO GERADO"
+=======
+            "Pré-mRNA": "-"
+>>>>>>> 6ada605f4dfb4caf587046688405b90480118fc2
         }
 
 
@@ -254,14 +281,41 @@ def processar_entrada(dna):
             "Resposta": "BUG - START ausente",
             "START": "-",
             "STOP": "-",
+<<<<<<< HEAD
             "Quadro": "-",
             "Transcrição": "-",
             "Pré-RNA": "NÃO GERADO"
+=======
+            "Pré-mRNA": "-"
+>>>>>>> 6ada605f4dfb4caf587046688405b90480118fc2
         }
 
 
     # --------------------------------------------------------
+<<<<<<< HEAD
     # 3. Procurar STOP no mesmo quadro de leitura
+=======
+    # 3. Verificar frameshift
+    # --------------------------------------------------------
+
+    existe_frameshift = deteccao_frameshift(
+        dna,
+        posicao_start
+    )
+
+    if existe_frameshift:
+
+        return {
+            "Resposta": "BUG - frameshift",
+            "START": posicao_start,
+            "STOP": "-",
+            "Pré-mRNA": "-"
+        }
+
+
+    # --------------------------------------------------------
+    # 4. Procurar STOP
+>>>>>>> 6ada605f4dfb4caf587046688405b90480118fc2
     # --------------------------------------------------------
 
     posicao_stop = encontrar_stop(
@@ -298,14 +352,22 @@ def processar_entrada(dna):
             "Resposta": "BUG - STOP ausente",
             "START": "ATG",
             "STOP": "-",
+<<<<<<< HEAD
             "Quadro": "OK",
             "Transcrição": "-",
             "Pré-RNA": "NÃO GERADO"
+=======
+            "Pré-mRNA": "-"
+>>>>>>> 6ada605f4dfb4caf587046688405b90480118fc2
         }
 
 
     # --------------------------------------------------------
+<<<<<<< HEAD
     # 5. Detectar nonsense / STOP prematuro
+=======
+    # 5. Verificar nonsense / STOP prematuro
+>>>>>>> 6ada605f4dfb4caf587046688405b90480118fc2
     # --------------------------------------------------------
 
     existe_nonsense = deteccao_nonsense(
@@ -316,6 +378,7 @@ def processar_entrada(dna):
     if existe_nonsense:
 
         return {
+<<<<<<< HEAD
             "Status": "ERRO",
             "Resposta": "BUG - nonsense / STOP prematuro",
             "START": "ATG",
@@ -323,11 +386,25 @@ def processar_entrada(dna):
             "Quadro": "OK",
             "Transcrição": "-",
             "Pré-RNA": "NÃO GERADO"
+=======
+            "Resposta":
+                "BUG - nonsense / STOP prematuro",
+
+            "START": posicao_start,
+
+            "STOP": posicao_stop,
+
+            "Pré-mRNA": "-"
+>>>>>>> 6ada605f4dfb4caf587046688405b90480118fc2
         }
 
 
     # --------------------------------------------------------
+<<<<<<< HEAD
     # 6. Transcrição
+=======
+    # 6. Entrada correta
+>>>>>>> 6ada605f4dfb4caf587046688405b90480118fc2
     # --------------------------------------------------------
 
     pre_rna = transcrever_dna(
@@ -342,19 +419,65 @@ def processar_entrada(dna):
     ]
 
 
-    # --------------------------------------------------------
-    # 7. Sequência correta
-    # --------------------------------------------------------
-
     return {
         "Status": "CORRETO",
         "Resposta": "CORRETO",
+<<<<<<< HEAD
         "START": "ATG",
         "STOP": stop,
         "Quadro": "OK",
         "Transcrição": "OK",
         "Pré-RNA": pre_rna
+=======
+
+        "START": posicao_start,
+
+        "STOP": posicao_stop,
+
+        "Pré-mRNA": pre_rna
+>>>>>>> 6ada605f4dfb4caf587046688405b90480118fc2
     }
+
+
+# ============================================================
+# FUNÇÃO PARA PROCESSAR TODAS AS ENTRADAS
+# ============================================================
+
+def processar_entradas(entradas):
+
+    resultados = []
+
+
+    for numero, dna in enumerate(
+        entradas,
+        start=1
+    ):
+
+        resultado = processar_entrada(dna)
+
+
+        resultados.append({
+
+            "Entrada": numero,
+
+            "DNA": dna,
+
+            "Resposta":
+                resultado["Resposta"],
+
+            "START":
+                resultado["START"],
+
+            "STOP":
+                resultado["STOP"],
+
+            "Pré-mRNA":
+                resultado["Pré-mRNA"]
+
+        })
+
+
+    return resultados
 
 
 # ============================================================
@@ -370,12 +493,14 @@ def gerar_diagnostico(resultados):
         "BUG - STOP ausente": 0,
         "BUG - frameshift": 0,
         "BUG - nonsense / STOP prematuro": 0
+
     }
 
 
     for resultado in resultados:
 
         resposta = resultado["Resposta"]
+
 
         if resposta in diagnosticos:
 
@@ -400,14 +525,44 @@ def gerar_arquivo_exportacao(resultados):
     for resultado in resultados:
 
         numero = resultado["Entrada"]
+<<<<<<< HEAD
         status = resultado["Status"]
         resposta = resultado["Resposta"]
         pre_rna = resultado["Pré-RNA"]
 
+=======
+
+        resposta = resultado["Resposta"]
+
+
+        # ----------------------------------------------------
+        # Resposta
+        # ----------------------------------------------------
+
+>>>>>>> 6ada605f4dfb4caf587046688405b90480118fc2
         linhas.append(
             f"{numero};{status};{resposta};{pre_rna}"
         )
 
+<<<<<<< HEAD
+=======
+
+        # ----------------------------------------------------
+        # Pré-mRNA somente para entradas corretas
+        # ----------------------------------------------------
+
+        if resposta == "CORRETO":
+
+            pre_rna = resultado["Pré-mRNA"]
+
+            linhas.append(
+                f"Pré-mRNA: {pre_rna}"
+            )
+
+
+        linhas.append("")
+
+>>>>>>> 6ada605f4dfb4caf587046688405b90480118fc2
 
     return "\n".join(linhas)
 
@@ -431,6 +586,7 @@ st.divider()
 # CARREGAMENTO DAS ENTRADAS
 # ============================================================
 
+<<<<<<< HEAD
 st.header("📂 Entradas")
 
 # O CSV já fica na pasta do projeto, junto com o app.py.
@@ -439,6 +595,10 @@ nome_arquivo = "BioCompiler_1_0_60_casos_alunos_SEM RESPOSTAS.csv"
 caminho_arquivo = os.path.join(
     os.path.dirname(__file__),
     nome_arquivo
+=======
+arquivo = (
+    "BioCompiler_1_0_60_casos_alunos_SEM RESPOSTAS.csv"
+>>>>>>> 6ada605f4dfb4caf587046688405b90480118fc2
 )
 
 
@@ -459,6 +619,12 @@ except Exception as erro:
 # INFORMAÇÕES SOBRE AS ENTRADAS
 # ============================================================
 
+<<<<<<< HEAD
+=======
+st.header("📂 Entradas")
+
+
+>>>>>>> 6ada605f4dfb4caf587046688405b90480118fc2
 col1, col2 = st.columns(2)
 
 
@@ -500,6 +666,7 @@ if st.button(
             "Nenhuma entrada foi encontrada no CSV."
         )
 
+
     else:
 
         st.info(
@@ -537,19 +704,31 @@ if st.button(
 
                 "DNA": dna,
 
+<<<<<<< HEAD
                 "Status": resultado["Status"],
 
                 "Resposta": resultado["Resposta"],
+=======
+                "Resposta":
+                    resultado["Resposta"],
+>>>>>>> 6ada605f4dfb4caf587046688405b90480118fc2
 
-                "START": resultado["START"],
+                "START":
+                    resultado["START"],
 
-                "STOP": resultado["STOP"],
+                "STOP":
+                    resultado["STOP"],
 
+<<<<<<< HEAD
                 "Quadro": resultado["Quadro"],
 
                 "Transcrição": resultado["Transcrição"],
 
                 "Pré-RNA": resultado["Pré-RNA"]
+=======
+                "Pré-mRNA":
+                    resultado["Pré-mRNA"]
+>>>>>>> 6ada605f4dfb4caf587046688405b90480118fc2
 
             })
 
@@ -570,7 +749,9 @@ if st.button(
 
         st.divider()
 
-        st.header("📋 Resultados da execução")
+        st.header(
+            "📋 Resultados da execução"
+        )
 
 
         df_resultados = pd.DataFrame(
@@ -655,7 +836,9 @@ if st.button(
 
         st.divider()
 
-        st.header("📊 Relatório diagnóstico")
+        st.header(
+            "📊 Relatório diagnóstico"
+        )
 
 
         diagnostico = gerar_diagnostico(
@@ -729,11 +912,35 @@ if st.button(
 
             "Quantidade": [
                 diagnostico["CORRETO"],
+<<<<<<< HEAD
                 diagnostico["BUG - base inválida"],
                 diagnostico["BUG - START ausente"],
                 diagnostico["BUG - STOP ausente"],
                 diagnostico["BUG - frameshift"],
                 diagnostico["BUG - nonsense / STOP prematuro"]
+=======
+
+                diagnostico[
+                    "BUG - base inválida"
+                ],
+
+                diagnostico[
+                    "BUG - START ausente"
+                ],
+
+                diagnostico[
+                    "BUG - STOP ausente"
+                ],
+
+                diagnostico[
+                    "BUG - frameshift"
+                ],
+
+                diagnostico[
+                    "BUG - nonsense / STOP prematuro"
+                ]
+
+>>>>>>> 6ada605f4dfb4caf587046688405b90480118fc2
             ]
 
         }
@@ -757,7 +964,9 @@ if st.button(
 
         st.divider()
 
-        st.header("📥 Exportação")
+        st.header(
+            "📥 Exportação"
+        )
 
 
         arquivo_resultados = gerar_arquivo_exportacao(
@@ -771,4 +980,8 @@ if st.button(
             file_name="resultados.txt",
             mime="text/plain",
             use_container_width=True
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6ada605f4dfb4caf587046688405b90480118fc2
         )
