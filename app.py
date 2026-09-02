@@ -410,47 +410,16 @@ def gerar_arquivo_exportacao(resultados):
 
     linhas = []
 
-
     for resultado in resultados:
 
         numero = resultado["Entrada"]
-
-        dna = resultado["DNA"]
-
         resposta = resultado["Resposta"]
-
-        start = resultado["START"]
-
-        stop = resultado["STOP"]
-
-        pre_rna = resultado["Pré-RNA"]
-
 
         linhas.append(
             f"Entrada {numero}: {resposta}"
         )
 
-        linhas.append(
-            f"DNA: {dna}"
-        )
-
-        linhas.append(
-            f"START: {start}"
-        )
-
-        linhas.append(
-            f"STOP: {stop}"
-        )
-
-        linhas.append(
-            f"Pré-RNA: {pre_rna}"
-        )
-
-        linhas.append("")
-
-
     return "\n".join(linhas)
-
 
 # ============================================================
 # CABEÇALHO
