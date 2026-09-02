@@ -107,10 +107,8 @@ if __name__ == "__main__":
         posicao_start = encontrar_start(dna)
         
         if posicao_start == -1:
-            print(f"Entrada {i}: BUG - START Ausente")
+            print(f"Entrada {i}: BUG - START ausente")
             continue
-
-        print(f"Entrada {i}: START encontrado na posição {posicao_start}")
 
         existe_frameshift = deteccao_frameshift(dna,posicao_start)
             
@@ -121,7 +119,7 @@ if __name__ == "__main__":
         posicao_stop = encontrar_stop(dna,posicao_start)
 
         if posicao_stop == -1:
-            print(f"Entrada {i}: BUG - STOP Ausente")
+            print(f"Entrada {i}: BUG - STOP ausente")
             continue
 
         existe_nonsense = deteccao_nonsense(dna,posicao_start)
@@ -130,4 +128,8 @@ if __name__ == "__main__":
             print(f"Entrada {i}: BUG - nonsense / STOP prematuro")
             continue
 
+        pre_rna = transcrever_dna(dna,posicao_start,posicao_stop)
+
         print(f"Entrada {i}: CORRETO")
+        print(f"Pré-mRNA: {pre_rna}")
+    
