@@ -35,8 +35,8 @@ Além do processamento, o sistema disponibiliza uma interface gráfica para:
 - visualizar o Pré-mRNA;
 - exportar os resultados para um arquivo `.txt`.
 
----
-#📄 Descrição dos arquivos
+------
+### 📄 Descrição dos arquivos
 
 # biocompiler.py
 Contém a lógica principal do BioCompiler.
@@ -49,7 +49,7 @@ deteccao_frameshift()
 deteccao_nonsense()
 transcrever_dna()
 
-#app.py
+# app.py
 Responsável pela interface gráfica do sistema utilizando Streamlit.
 Principais responsabilidades:
 configuração da página;
@@ -61,11 +61,11 @@ relatório diagnóstico;
 exportação dos resultados;
 organização visual da aplicação.
 
-#fundo_biocompiler.png
+# fundo_biocompiler.png
 Imagem utilizada como plano de fundo da interface.
 Deve permanecer na mesma pasta do app.py.
 
-# 🧬 Funcionamento do BioCompiler
+### 🧬 Funcionamento do BioCompiler
 
 O processamento de cada sequência segue uma ordem definida.
 
