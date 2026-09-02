@@ -114,3 +114,45 @@ O processamento de cada sequência segue uma ordem definida.
                                                                 PRÉ-mRNA
 
 
+```
+## ▶️ Como executar o projeto
+
+### 1. Clonar o repositório
+
+```bash
+git clone https://github.com/MonnikLuianne/Biocompiler-validacao-transcricao-DNA-e-pre-RNA.git
+2. Acessar a pasta do projeto
+cd Biocompiler-validacao-transcricao-DNA-e-pre-RNA
+3. Criar o ambiente virtual
+No Windows:
+python -m venv .venv
+4. Ativar o ambiente virtual
+No Windows:
+.venv\Scripts\activate
+5. Instalar as dependências
+pip install -r requirements.txt
+6. Executar a aplicação
+streamlit run app.py
+Após executar o comando, o Streamlit abrirá a aplicação no navegador.
+7. Utilizar o sistema
+Na interface do BioCompiler:
+Clique no botão "Iniciar processamento".
+O sistema processará as 60 entradas presentes no arquivo BioCompiler_1_0_60_casos_alunos_SEM RESPOSTAS.csv.
+Os resultados de cada entrada serão apresentados na interface.
+O sistema exibirá um diagnóstico com a quantidade de ocorrências de cada tipo de resultado.
+Para as entradas classificadas como CORRETO, será apresentada a sequência de Pré-RNA.
+Ao final do processamento, será possível exportar os resultados.
+📄 Exportação dos resultados
+O sistema possui uma opção para exportar os resultados do processamento.
+Ao clicar no botão de exportação, será gerado o arquivo:
+resultados_biocompiler.txt
+O arquivo contém as informações obtidas durante o processamento das 60 entradas, incluindo:
+Número da entrada;
+Sequência de DNA;
+Resultado do diagnóstico;
+Posição do START;
+Posição do STOP;
+Sequência de Pré-RNA, quando aplicável.
+O arquivo pode ser salvo pelo usuário e utilizado para consulta ou entrega dos resultados do processamento.
+⚠️ Observação
+Para executar o projeto corretamente, o arquivo BioCompiler_1_0_60_casos_alunos_SEM RESPOSTAS.csv deve estar presente na pasta do projeto, pois ele contém as 60 entradas utilizadas pelo sistema.
