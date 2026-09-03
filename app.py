@@ -181,6 +181,40 @@ if imagem_base64:
 
 
         /* ====================================================
+           DETALHAMENTO
+           ==================================================== */
+
+        div[data-testid="stExpander"] {{
+            background: rgba(0, 0, 0, 0.55) !important;
+            border: 1px solid rgba(255, 255, 255, 0.25) !important;
+            border-radius: 12px !important;
+            margin-bottom: 10px !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        }}
+
+        div[data-testid="stExpander"] summary {{
+            background: rgba(0, 0, 0, 0.25) !important;
+            border-radius: 12px !important;
+        }}
+
+        div[data-testid="stExpander"] summary p {{
+            color: white !important;
+            font-weight: 700 !important;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+        }}
+
+        div[data-testid="stExpander"] div[data-testid="stExpanderDetails"] {{
+            background: rgba(0, 0, 0, 0.30) !important;
+            border-radius: 0 0 12px 12px !important;
+        }}
+
+        div[data-testid="stExpander"] p {{
+            color: white !important;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+        }}
+
+
+        /* ====================================================
            ALERTAS
            ==================================================== */
 
