@@ -149,13 +149,11 @@ Ao final do processamento, será possível exportar os resultados.
 # 📄 Exportação dos resultados
 O sistema possui uma opção para exportar os resultados do processamento.
 Ao clicar no botão de exportação, será gerado o arquivo:
-resultados_biocompiler.txt
+resultados.txt
 O arquivo contém as informações obtidas durante o processamento das 60 entradas, incluindo:
 Número da entrada;
-Sequência de DNA;
-Resultado do diagnóstico;
-Posição do START;
-Posição do STOP;
+status do processamento;
+resultado do diagnóstico;
 Sequência de Pré-RNA, quando aplicável.
 O arquivo pode ser salvo pelo usuário e utilizado para consulta ou entrega dos resultados do processamento.
 
