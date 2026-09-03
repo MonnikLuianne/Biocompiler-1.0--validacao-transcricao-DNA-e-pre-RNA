@@ -65,8 +65,8 @@ organização visual da aplicação.
 Imagem utilizada como plano de fundo da interface.
 Deve permanecer na mesma pasta do app.py.
 
-# BioCompiler_1_0_60_casos_alunos_SEM RESPOSTAS.csv
-Conntém as 60 entradas utilizadas pelo sistema.
+# BioCompiler_1_0_entrada_60_casos_NOVO.txt
+Contém as 60 entradas utilizadas pelo sistema.
 Deve permanecer na mesma pasta do projeto.
 
 ### 🧬 Funcionamento do BioCompiler
@@ -116,6 +116,8 @@ O processamento de cada sequência segue uma ordem definida.
                                                                      │
                                                                      ▼
                                                                 PRÉ-mRNA
+
+
 
 
 ```
