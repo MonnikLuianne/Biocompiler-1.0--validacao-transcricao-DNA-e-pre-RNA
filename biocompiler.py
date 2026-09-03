@@ -1,16 +1,11 @@
 import pandas as pd
 
 def ler_arquivo(caminho):
-    if caminho.endswith(".csv"):
-        tabela = pd.read_csv(caminho)
-        entradas = tabela["entrada"].tolist()
+    with open(caminho,"r",encoding="utf-8") as arquivo:
+        entradas = []
 
-    else:
-        with open(caminho,"r",encoding="utf-8") as arquivo:
-            entradas = []
-
-            for linha in arquivo:
-                entradas.append(linha.strip())
+        for linha in arquivo:
+            entradas.append(linha.strip())
 
     return entradas
 
@@ -117,7 +112,7 @@ def salvar_resultados(resultados):
             
 if __name__ == "__main__":
 
-    arquivo = "BioCompiler_1_0_60_casos_alunos_SEM RESPOSTAS.csv"
+    arquivo = "BioCompiler_1_0_entrada_60_casos_NOVO.txt"
 
     entradas = ler_arquivo(arquivo)
 
