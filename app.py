@@ -215,6 +215,37 @@ if imagem_base64:
 
 
         /* ====================================================
+           SEQUÊNCIA DE DNA NO DETALHAMENTO
+           ==================================================== */
+
+        .sequencia-dna {{
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.20);
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 6px;
+            font-family: "Courier New", monospace;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            line-height: 1.8;
+            overflow-wrap: anywhere;
+            word-break: break-all;
+        }}
+
+        .dna-verde {{
+            color: #39ff88 !important;
+            font-weight: 900;
+        }}
+
+        .dna-vermelho {{
+            color: #ff4d4d !important;
+            font-weight: 900;
+            text-shadow: 0 0 5px rgba(255, 0, 0, 0.45);
+        }}
+
+
+        /* ====================================================
            ALERTAS
            ==================================================== */
 
@@ -516,6 +547,147 @@ st.divider()
 
 
 # ============================================================
+# FUNÇÃO PARA MOSTRAR A SEQUÊNCIA NO DETALHAMENTO
+# ============================================================
+
+def mostrar_sequencia_detalhamento(dna, resposta):
+    """
+    Mostra a sequência analisada mantendo as informações existentes.
+    Verde = START/STOP identificados.
+    Vermelho = ponto onde o erro foi encontrado.
+    """
+
+    bases_validas = {"A", "T", "C", "G"}
+
+    # Caso 1: base inválida
+    if resposta == "BUG - base inválida":
+        partes = []
+        for base in dna:
+            if base not in bases_validas:
+                partes.append(
+                    f'<span class="dna-vermelho">{base}</span>'
+                )
+            else:
+                partes.append(base)
+
+        sequencia_formatada = "".join(partes)
+
+    else:
+        posicao_start = encontrar_start(dna)
+
+        # Sem START: não há região de leitura para destacar.
+        if posicao_start == -1:
+            sequencia_formatada = dna
+
+        # Caso 2: frameshift
+        elif resposta == "BUG - frameshift":
+            partes = []
+            posicao_erro = len(dna) - 3
+
+            for i, base in enumerate(dna):
+                if i == posicao_start:
+                    partes.append(
+                        '<span class="dna-verde">ATG</span>'
+                    )
+                elif i == posicao_erro:
+                    partes.append(
+                        f'<span class="dna-vermelho">{dna[i:i+3]}</span>'
+                    )
+                    break
+                elif i > posicao_start and i < posicao_erro:
+                    partes.append(base)
+
+            sequencia_formatada = "".join(partes)
+
+        # Caso 3: nonsense / STOP prematuro
+        elif resposta == "BUG - nonsense / STOP prematuro":
+            posicao_stop_erro = -1
+            i = posicao_start + 3
+
+            while i <= len(dna) - 3:
+                codon = dna[i:i+3]
+                if codon in {"TAA", "TAG", "TGA"}:
+                    posicao_stop_erro = i
+                    break
+                i += 3
+
+            partes = []
+            i = 0
+
+            while i < len(dna):
+                if i == posicao_start:
+                    partes.append(
+                        '<span class="dna-verde">ATG</span>'
+                    )
+                    i += 3
+                elif i == posicao_stop_erro:
+                    partes.append(
+                        f'<span class="dna-vermelho">{dna[i:i+3]}</span>'
+                    )
+                    i += 3
+                else:
+                    partes.append(dna[i])
+                    i += 1
+
+            sequencia_formatada = "".join(partes)
+
+        else:
+            # Para STOP ausente e demais casos com START válido:
+            # destaca o START em verde.
+            partes = []
+            i = 0
+
+            while i < len(dna):
+                if i == posicao_start:
+                    partes.append(
+                        '<span class="dna-verde">ATG</span>'
+                    )
+                    i += 3
+                else:
+                    partes.append(dna[i])
+                    i += 1
+
+            sequencia_formatada = "".join(partes)
+
+            # Caso correto: destaca START e STOP em verde.
+            if resposta == "CORRETO":
+                posicao_stop = encontrar_stop(dna, posicao_start)
+
+                if posicao_stop != -1:
+                    partes = []
+                    i = 0
+
+                    while i < len(dna):
+                        if i == posicao_start:
+                            partes.append(
+                                '<span class="dna-verde">ATG</span>'
+                            )
+                            i += 3
+                        elif i == posicao_stop:
+                            partes.append(
+                                '<span class="dna-verde">'
+                                f'{dna[i:i+3]}'
+                                '</span>'
+                            )
+                            i += 3
+                        else:
+                            partes.append(dna[i])
+                            i += 1
+
+                    sequencia_formatada = "".join(partes)
+
+    st.write("**Sequência analisada:**")
+
+    st.markdown(
+        f'<div class="sequencia-dna">{sequencia_formatada}</div>',
+        unsafe_allow_html=True
+    )
+
+
+# ============================================================
+
+
+# ============================================================
 # EXECUÇÃO
 # ============================================================
 
@@ -681,6 +853,13 @@ if st.button(
                     st.write(
                         "**pré-mRNA:** NÃO GERADO"
                     )
+
+                # Acrescenta a sequência analisada sem remover
+                # nenhuma das informações acima.
+                mostrar_sequencia_detalhamento(
+                    resultado["DNA"],
+                    resultado["Resposta"]
+                )
 
 
         # ====================================================
