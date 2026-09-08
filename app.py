@@ -594,7 +594,7 @@ def mostrar_sequencia_detalhamento(dna, resposta):
                         f'<span class="dna-vermelho">{dna[i:i+3]}</span>'
                     )
                     break
-                elif i > (posicao_start+2) and i < posicao_erro:
+                elif i > (posicao_start+2) and i < posicao_erro:    
                     partes.append(base)
 
             sequencia_formatada = "".join(partes)
